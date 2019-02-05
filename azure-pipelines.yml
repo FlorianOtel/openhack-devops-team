@@ -4,16 +4,24 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+  branches:
+    include:
+    - dev
+  paths:
+    include:
+    - apis/poi
 
 pool:
   vmImage: 'Ubuntu-16.04'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- script: dotnet build apis/poi/poi.sln  --configuration Release
+  displayName: 'Build'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- script: dotnet test apis/poi/tests/UnitTests --logger trx
+  displayName: 'Run unit tests'
+
+- task: PublishTestResults@2
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'
