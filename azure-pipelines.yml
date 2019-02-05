@@ -18,10 +18,20 @@ steps:
 - script: dotnet build apis/poi/poi.sln  --configuration Release
   displayName: 'Build'
 
-- script: dotnet test apis/poi/tests/UnitTests --logger trx
+- script: dotnet test apis/poi/tests/UnitTests --logger "trx;logFileName=testresults.trx"
   displayName: 'Run unit tests'
 
 - task: PublishTestResults@2
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
+
+- bash: |
+    TRX_FILE=`cat apis/poi/tests/UnitTests/TestResults/testresults.trx`
+    curl -X POST \
+      -H 'Content-Type: application/json' \
+      -H 'Accept: application/json' \
+      "https://prod-15.westcentralus.logic.azure.com/workflows/90d00fc186254dfeae7e78bef22493e0/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ugTNE36hp4LSM-HI2oUyAagvU46kdf1an3Rmc11Fqbo" \
+      --data-urlencode '{"text": "TRX_FILE"}'
+  displayName: "Create GitHub issue"
+  condition: failed()
