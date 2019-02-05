@@ -1,4 +1,5 @@
 # Project Name
+[![Build Status](https://dev.azure.com/20190205openhack/team14/_apis/build/status/FlorianOtel.openhack-devops-team%20(1)?branchName=dev)](https://dev.azure.com/20190205openhack/team14/_build/latest?definitionId=6&branchName=master)
 
 The DevOps open hack event is designed to foster learning via implementing DevOps practices with a series of challenges.
 
